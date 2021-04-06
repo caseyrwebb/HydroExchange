@@ -1,0 +1,20 @@
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+.container-not-visible {
+  margin: 80px auto 0 auto;
+}
+
+.container-visible {
+  margin: 150px auto 0 auto;
+}
+
+.leaflet-container {
+  margin-left: -1%;
+  width: 101.55%;
+  height: 90.25vh;
+  margin-top: 0px;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "texas_water_backend",
+  "version": "1.0.0",
+  "description": "MongoDB functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Casey",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.4",
+    "node-fetch": "^2.6.1"
+  }
+}
