@@ -45,31 +45,31 @@ const styles = {
   },
 };
 
-class Welcome extends Component {
+class Signup extends Component {
   constructor() {
     super();
     this.state = {
+      name: "",
       email: "",
       password: "",
     };
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();
-
-    const userData = {
+    const newUserData = {
+      name: this.state.name,
       email: this.state.email,
       password: this.state.password,
     };
     axios
-      .post("http://localhost:4000/api/auth/", userData)
+      .post("http://localhost:4000/api/users/", newUserData)
       .then((res) => {
         console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
-    this.props.loginUser();
+
     event.target.reset();
   };
 
@@ -85,9 +85,18 @@ class Welcome extends Component {
         <Grid item sm />
         <Grid item sm>
           <Typography variant="h2" className={classes.pageTitle}>
-            Login
+            Signup
           </Typography>
           <form noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              id="name"
+              name="name"
+              label="Name"
+              className={classes.textField}
+              value={this.state.name}
+              onChange={this.handleChange}
+              fullWidth
+            />
             <TextField
               id="email"
               name="email"
@@ -109,14 +118,16 @@ class Welcome extends Component {
               fullWidth
             />
 
-            <AuthButton
+            <Button
               className={classes.button}
-              email={this.state.email}
-              password={this.state.password}
-            />
+              variant="contained"
+              type="submit"
+            >
+              Submit
+            </Button>
             <br />
             <small>
-              Don't have an account? <Link to="/signup">Sign up</Link>
+              Already have an account? <Link to="/">Login</Link>
             </small>
           </form>
         </Grid>
@@ -126,4 +137,4 @@ class Welcome extends Component {
   }
 }
 
-export default withStyles(styles)(Welcome);
+export default withStyles(styles)(Signup);

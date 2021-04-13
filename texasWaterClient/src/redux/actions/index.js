@@ -14,6 +14,7 @@ export const getUser = (userData) => async (dispatch) => {
       type: USER_AUTH,
       payload: res.data,
     });
+    setAuthorizationHeader(res.headers["authorization"]);
   } catch (e) {
     dispatch({
       type: USER_ERROR,
@@ -26,4 +27,8 @@ export const toggleBidModal = () => {
   return {
     type: "TOGGLE_BID_MODAL",
   };
+};
+
+const setAuthorizationHeader = (token) => {
+  localStorage.setItem("Token", token);
 };

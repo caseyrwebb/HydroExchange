@@ -119,8 +119,8 @@ class Home extends Component {
           return (
             <p style={{ marginTop: "-15px", color: "#66CDAA" }}>
               Your Stake:{" "}
-              {(this.state.activeWell.properties.conservation_storage /
-                this.props.user.user.stakes[name][0]) *
+              {(this.props.user.user.stakes[name][0] /
+                this.state.activeWell.properties.conservation_storage) *
                 100}
               %
             </p>

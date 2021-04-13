@@ -48,21 +48,6 @@ app.get("/currentPrice", (request, response) => {
   });
 });
 
-// app.post("/stake", (req, res) => {
-//   let set = { [req.body.wellName]: [req.body.quantity, req.body.price, false] };
-//   users.findOneAndUpdate(
-//     { email: req.body.email },
-//     { $set: { stakes: set } },
-//     function (err, response) {
-//       if (err) {
-//         throw err;
-//       } else {
-//         res.json({ message: "Updated" });
-//       }
-//     }
-//   );
-// });
-
 app.post("/stake", async (req, res) => {
   if (req.body.email === "czar@email.com") {
     let user = await users.find({ email: req.body.email }).toArray();
@@ -185,28 +170,64 @@ app.post("/stake", async (req, res) => {
   res.status(200).send("Fuck Yea!");
 });
 
-// app.post("/stake", async (req, res) => {
-//   let set = { [req.body.wellName]: [req.body.quantity, req.body.price, false] };
-//   stake = await users.find(
-//     { email: req.body.email },
-//     {
-//       stakes: {
-//         [req.body.wellName]: { $exists: true },
-//       },
-//     }
-//   );
-//   if (stake) {
-//     newStake = await users.findOneAndUpdate(
-//       { email: req.body.email },
-//       { $set: { stakes: set } }
-//     );
-//     return res.status(200).send("Updated Document");
-//   } else {
-//     newStake = await users.findOneAndUpdate(
-//       { email: req.body.email },
-//       { $push: { stakes: set } }
-//     );
-//
-//     res.status(200).send("Added new stake to document");
-//   }
-// });
+app.post("/sell", async (req, res) => {
+  let userSeller = await users.find({ email: req.body.sellerEmail }).toArray();
+
+  let userBuyer = await users.find({ email: req.body.buyerEmail }).toArray();
+
+  let sellerStake = userSeller[0].stakes[req.body.wellName];
+
+  let buyerStake = userBuyer[0].stakes[req.body.wellName];
+
+  let diff = sellerStake[0] - buyerStake[0];
+
+  if (sellerStake[2] === false) {
+    res.status(200).send("You can not sell stake that you do not own.");
+  } else if (diff < 0) {
+    res.status(200).send("You can not sell more than your share.");
+  } else {
+    let buyerStakes = userBuyer[0].stakes;
+
+    buyerStakes[req.body.wellName][2] = true;
+
+    let newBuyerStake = await users.findOneAndUpdate(
+      { email: req.body.buyerEmail },
+      { $set: { stakes: buyerStakes } }
+    );
+
+    let sellerStakes = userSeller[0].stakes;
+
+    sellerStakes[req.body.wellName][0] = diff;
+
+    if (diff === 0) delete sellerStakes[req.body.wellName];
+
+    let newSellerStake = await users.findOneAndUpdate(
+      { email: req.body.sellerEmail },
+      { $set: { stakes: sellerStakes } }
+    );
+
+    let well = await wellDetails
+      .find({
+        "properties.full_name": req.body.wellName,
+      })
+      .toArray();
+
+    let wellStake = well[0].stakes;
+
+    wellStake[req.body.buyerEmail][2] = true;
+    wellStake[req.body.sellerEmail][0] = diff;
+
+    if (diff === 0) delete wellStake[req.body.sellerEmail];
+
+    let newWellStake = await wellDetails.findOneAndUpdate(
+      { "properties.full_name": req.body.wellName },
+      {
+        $set: {
+          stakes: wellStake,
+        },
+      }
+    );
+
+    res.status(200).send("Hell Yea!");
+  }
+});

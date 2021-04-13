@@ -52,9 +52,18 @@ function BidForm({ well, toggle }) {
       });
   };
 
-  const SellMarkup = Object.entries(well.stakes).map(([key, value]) => {
-    return <SellLogCard stakeKey={key} stakeValues={value} />;
-  });
+  const SellMarkup = well.stakes
+    ? Object.entries(well.stakes).map(([key, value]) => {
+        return (
+          <SellLogCard
+            stakeKey={key}
+            stakeValues={value}
+            seller={user}
+            wellName={well.properties.full_name}
+          />
+        );
+      })
+    : null;
 
   if (toggle === "bid")
     return (

@@ -13,8 +13,12 @@ const app = express();
 const uri = process.env.MONGODB_URI;
 const connection = mongoose.connection;
 
+const corsOptions = {
+  exposedHeaders: "Authorization",
+};
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/stake", stake);

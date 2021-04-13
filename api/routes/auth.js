@@ -31,15 +31,23 @@ router.post("/", async (req, res) => {
     return res.status(400).send("Incorrect email or password.");
   }
   const token = jwt.sign({ _id: user._id }, config.get("PrivateKey"));
-  const stakes = Object.fromEntries(
-    Object.entries(user._doc.stakes).map(([key, val]) => [key, val])
-  );
 
-  const obj = _.pick(user, ["_id", "name", "email"]);
+  if ("stakes" in user._doc) {
+    let stakes = Object.fromEntries(
+      Object.entries(user._doc.stakes).map(([key, val]) => [key, val])
+    );
+    const obj = _.pick(user, ["_id", "name", "email"]);
 
-  obj.stakes = stakes;
+    obj.stakes = stakes;
 
-  res.header("x-auth-token", token).send(obj);
+    res.header("Authorization", token).send(obj);
+  } else {
+    const obj = _.pick(user, ["_id", "name", "email"]);
+
+    obj.stakes = {};
+
+    res.header("Authorization", token).send(obj);
+  }
 });
 
 module.exports = router;

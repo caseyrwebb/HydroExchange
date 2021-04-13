@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 //MUI
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -6,6 +7,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import Button from "@material-ui/core/Button";
 
 const styles = {
   button: {
@@ -44,6 +46,9 @@ const styles = {
     flexWrap: "wrap",
     flexDirection: "column",
   },
+  sellButton: {
+    backgroundColor: "lightblue",
+  },
 };
 
 class SellLogCard extends Component {
@@ -64,43 +69,66 @@ class SellLogCard extends Component {
     console.log(this.state);
   };
 
+  handleSell = () => {
+    const sellData = {
+      wellName: this.props.wellName,
+      sellerEmail: this.props.seller,
+      buyerEmail: this.props.stakeKey,
+    };
+
+    axios
+      .post("http://localhost:9000/sell", sellData)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
-    const { stakeKey, stakeValues, classes } = this.props;
+    const { stakeKey, stakeValues, classes, seller, wellName } = this.props;
 
     let containerClass = this.state.visible
       ? classes.stakeCardVisible
       : classes.stakeCardHidden;
 
-    return (
-      <>
-        <ButtonBase
-          className={classes.button}
-          disableTouchRipple
-          onClick={this.handleClick}
-        >
-          <div className={classes.card}>
-            <div className={classes.content}>
-              <Typography variant="body2" style={{ marginRight: "0.25em" }}>
-                {stakeKey}
-              </Typography>
-              <Typography variant="body2" style={{ marginRight: "0.25em" }}>
-                {stakeValues[0]}
-              </Typography>
-              <Typography variant="body2" style={{ marginRight: "0.25em" }}>
-                {stakeValues[1]}
-              </Typography>
+    if (this.props.stakeValues[2] === false) {
+      return (
+        <>
+          <ButtonBase
+            className={classes.button}
+            disableTouchRipple
+            onClick={this.handleClick}
+          >
+            <div className={classes.card}>
+              <div className={classes.content}>
+                <Typography variant="body2" style={{ marginRight: "0.25em" }}>
+                  {stakeKey}
+                </Typography>
+                <Typography variant="body2" style={{ marginRight: "0.25em" }}>
+                  {stakeValues[0]}
+                </Typography>
+                <Typography variant="body2" style={{ marginRight: "0.25em" }}>
+                  {stakeValues[1]}
+                </Typography>
+              </div>
             </div>
-          </div>
-        </ButtonBase>
-        <Card className={containerClass}>
-          <CardContent className={classes.stakeContent}>
-            <div className={classes.stakeInfo}>
-              <p>sell</p>
-            </div>
-          </CardContent>
-        </Card>
-      </>
-    );
+          </ButtonBase>
+          <Card className={containerClass}>
+            <CardContent className={classes.stakeContent}>
+              <div className={classes.stakeInfo}>
+                <Button variant="contained" onClick={this.handleSell}>
+                  sell
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

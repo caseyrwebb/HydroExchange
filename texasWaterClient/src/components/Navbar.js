@@ -32,6 +32,11 @@ const theme = createMuiTheme({
 function Navbar() {
   const dispatch = useDispatch();
 
+  const handleLogout = () => {
+    localStorage.removeItem("Token");
+    window.location.reload();
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AppBar>
@@ -95,10 +100,7 @@ function Navbar() {
                 justifyContent: "center",
               }}
             >
-              <ButtonBase
-                onClick={() => console.log("dispatch(loginUser())")}
-                disableTouchRipple
-              >
+              <ButtonBase onClick={handleLogout} disableTouchRipple>
                 <VscAccount style={{ fontSize: "30px" }} />
               </ButtonBase>
             </div>
